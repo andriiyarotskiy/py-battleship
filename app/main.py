@@ -17,8 +17,6 @@ class Ship:
             is_drowned: bool = False
     ) -> None:
         # Create decks and save them to a list `self.decks`
-        self.start = start
-        self.end = end
         self.decks = self.create_decks(start, end)
         self.is_drowned = is_drowned
 

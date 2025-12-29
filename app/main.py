@@ -1,6 +1,3 @@
-from setuptools.config._validate_pyproject import ValidationError
-
-
 class Deck:
     def __init__(self, row: int, column: int, is_alive: bool = True) -> None:
         self.row = row
@@ -62,7 +59,11 @@ class Battleship:
         # Its keys are tuples - the coordinates of the non-empty cells,
         # A value for each cell is a reference to the ship
         # which is located in it
-        self.ships = [Ship(start, end) for start, end in ships]
+
+        self.ships = [
+            Ship(*sorted(ship, key=lambda element: element[1]))
+            for ship in ships
+        ]
         self.field = {}
         for ship in self.ships:
             for deck in ship.decks:
@@ -84,7 +85,7 @@ class Battleship:
 
     def _validate_field(self) -> None:
         if len(self.ships) != 10:
-            raise ValidationError("The total number of the ships should be 10")
+            raise ValueError("The total number of the ships should be 10")
         expected_types = {1: 4, 2: 3, 3: 2, 4: 1}
         counts = {}
         for ship in self.ships:
@@ -94,9 +95,9 @@ class Battleship:
         for length, needed in expected_types.items():
             actual = counts.get(length, 0)
             if actual != needed:
-                raise ValidationError(f"Expected {needed} "
-                                      f"ships of length "
-                                      f"{length}, got {actual}")
+                raise ValueError(f"Expected {needed} "
+                                 f"ships of length "
+                                 f"{length}, got {actual}")
 
     def __repr__(self) -> str:
         return f"field: {self.field}, ships: {self.ships}"
